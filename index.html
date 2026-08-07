@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Itinerary</title>
+    <title>Schedule</title>
     <style>
         :root {
             --bg-color: #fcf8f2;
@@ -147,7 +147,7 @@
     <div class="itinerary-container">
 
         <!-- August 18 -->
-        <div class="day-card" data-date="2026-08-18">
+        <div class="day-card" data-date="2026-08-18" data-location="Haneda Airport, Tokyo, Japan">
             <div class="date-header">
                 <h2>Aug 18 (Tue)</h2>
                 <div class="weather-badge">Loading...</div>
@@ -158,7 +158,7 @@
         </div>
 
         <!-- August 19 -->
-        <div class="day-card" data-date="2026-08-19">
+        <div class="day-card" data-date="2026-08-19" data-location="Ichikawa, Chiba, Japan">
             <div class="date-header">
                 <h2>Aug 19 (Wed)</h2>
                 <div class="weather-badge">Loading...</div>
@@ -171,7 +171,7 @@
         </div>
 
         <!-- August 20 -->
-        <div class="day-card" data-date="2026-08-20">
+        <div class="day-card" data-date="2026-08-20" data-location="Shibuya, Tokyo, Japan">
             <div class="date-header">
                 <h2>Aug 20 (Thu)</h2>
                 <div class="weather-badge">Loading...</div>
@@ -186,7 +186,7 @@
         </div>
 
         <!-- August 21 -->
-        <div class="day-card" data-date="2026-08-21">
+        <div class="day-card" data-date="2026-08-21" data-location="Tokyo, Japan">
             <div class="date-header">
                 <h2>Aug 21 (Fri)</h2>
                 <div class="weather-badge">Loading...</div>
@@ -197,7 +197,7 @@
         </div>
 
         <!-- August 22 -->
-        <div class="day-card" data-date="2026-08-22">
+        <div class="day-card" data-date="2026-08-22" data-location="Hakone, Kanagawa, Japan">
             <div class="date-header">
                 <h2>Aug 22 (Sat)</h2>
                 <div class="weather-badge">Loading...</div>
@@ -209,7 +209,7 @@
         </div>
 
         <!-- August 23 -->
-        <div class="day-card" data-date="2026-08-23">
+        <div class="day-card" data-date="2026-08-23" data-location="Tokyo, Japan">
             <div class="date-header">
                 <h2>Aug 23 (Sun)</h2>
                 <div class="weather-badge">Loading...</div>
@@ -220,7 +220,7 @@
         </div>
 
         <!-- August 24 -->
-        <div class="day-card" data-date="2026-08-24">
+        <div class="day-card" data-date="2026-08-24" data-location="Tokyo, Japan">
             <div class="date-header">
                 <h2>Aug 24 (Mon)</h2>
                 <div class="weather-badge">Loading...</div>
@@ -231,7 +231,7 @@
         </div>
 
         <!-- August 25 -->
-        <div class="day-card" data-date="2026-08-25">
+        <div class="day-card" data-date="2026-08-25" data-location="Tokyo, Japan">
             <div class="date-header">
                 <h2>Aug 25 (Tue)</h2>
                 <div class="weather-badge">Loading...</div>
@@ -242,7 +242,7 @@
         </div>
 
         <!-- August 26 -->
-        <div class="day-card rest" data-date="2026-08-26">
+        <div class="day-card rest" data-date="2026-08-26" data-location="Tokyo, Japan">
             <div class="date-header">
                 <h2>Aug 26 (Wed)</h2>
                 <div class="weather-badge">Loading...</div>
@@ -253,7 +253,7 @@
         </div>
 
         <!-- August 27 -->
-        <div class="day-card" data-date="2026-08-27">
+        <div class="day-card" data-date="2026-08-27" data-location="Haneda Airport, Tokyo, Japan">
             <div class="date-header">
                 <h2>Aug 27 (Thu)</h2>
                 <div class="weather-badge">Loading...</div>
@@ -267,62 +267,79 @@
     </div>
 
     <script>
-        async function fetchWeather() {
-            // Tokyo coordinates (Haneda/Central Tokyo area)
-            const lat = 35.6762;
-            const lon = 139.6503;
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Asia%2FTokyo`;
+        async function fetchWeatherForCards() {
+            const cards = document.querySelectorAll('.day-card');
 
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                if (!data.daily) return;
-
-                const dates = data.daily.time;
-                const maxTemps = data.daily.temperature_2m_max;
-                const minTemps = data.daily.temperature_2m_min;
-                const weatherCodes = data.daily.weathercode;
-
-                // Loop through each card and match the date
-                const cards = document.querySelectorAll('.day-card');
-                cards.forEach(card => {
+            cards.forEach((card, index) => {
+                setTimeout(async () => {
                     const cardDate = card.getAttribute('data-date');
-                    const index = dates.indexOf(cardDate);
-                    
-                    if (index !== -1) {
-                        const max = Math.round(maxTemps[index]);
-                        const min = Math.round(minTemps[index]);
-                        const code = weatherCodes[index];
-                        
-                        const weatherInfo = getWeatherEmojiAndDesc(code);
-                        const badge = card.querySelector('.weather-badge');
-                        badge.textContent = `${weatherInfo.emoji} ${max}°C / ${min}°C`;
+                    const locationName = card.getAttribute('data-location');
+                    const badge = card.querySelector('.weather-badge');
+
+                    if (!locationName) return;
+
+                    try {
+                        const geoUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}&limit=1`;
+                        const geoResponse = await fetch(geoUrl, {
+                            headers: { 'User-Agent': 'ItineraryWeatherApp/1.0' }
+                        });
+                        const geoData = await geoResponse.json();
+
+                        if (!geoData || geoData.length === 0) {
+                            badge.textContent = "Location not found";
+                            return;
+                        }
+
+                        const lat = geoData[0].lat;
+                        const lon = geoData[0].lon;
+
+                        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Asia%2FTokyo&forecast_days=16`;
+                        const weatherResponse = await fetch(weatherUrl);
+                        const weatherData = await weatherResponse.json();
+
+                        if (!weatherData.daily) {
+                            badge.textContent = "Unavailable";
+                            return;
+                        }
+
+                        const dates = weatherData.daily.time;
+                        const maxTemps = weatherData.daily.temperature_2m_max;
+                        const minTemps = weatherData.daily.temperature_2m_min;
+                        const weatherCodes = weatherData.daily.weathercode;
+
+                        const dateIndex = dates.indexOf(cardDate);
+
+                        if (dateIndex !== -1) {
+                            const max = Math.round(maxTemps[dateIndex]);
+                            const min = Math.round(minTemps[dateIndex]);
+                            const code = weatherCodes[dateIndex];
+                            
+                            const weatherInfo = getWeatherEmojiAndDesc(code);
+                            badge.textContent = `${weatherInfo.emoji} ${max}°C / ${min}°C`;
+                        } else {
+                            badge.textContent = "Out of range";
+                        }
+
+                    } catch (error) {
+                        console.error("Error loading weather for:", locationName, error);
+                        badge.textContent = "Unavailable";
                     }
-                });
-            } catch (error) {
-                console.error("Failed to fetch weather data:", error);
-                document.querySelectorAll('.weather-badge').forEach(badge => {
-                    badge.textContent = "Weather unavailable";
-                });
-            }
+                }, index * 1000); // 1-second stagger to respect OpenStreetMap rate limits
+            });
         }
 
-        // Helper function to map WMO weather codes to emojis
         function getWeatherEmojiAndDesc(code) {
-            // WMO Weather interpretation codes (Open-Meteo standard)
-            if (code === 0) return { emoji: '☀️' }; // Clear sky
-            if (code >= 1 && code <= 3) return { emoji: '⛅' }; // Mainly clear, partly cloudy, overcast
-            if (code === 45 || code === 48) return { emoji: '🌫️' }; // Fog
-            if (code >= 51 && code <= 67) return { emoji: '🌧️' }; // Drizzle / Rain
-            if (code >= 71 && code <= 77) return { emoji: '❄️' }; // Snow
-            if (code >= 80 && code <= 82) return { emoji: '🌦️' }; // Rain showers
-            if (code >= 95 && code <= 99) return { emoji: '⛈️' }; // Thunderstorm
+            if (code === 0) return { emoji: '☀️' }; 
+            if (code >= 1 && code <= 3) return { emoji: '⛅' }; 
+            if (code === 45 || code === 48) return { emoji: '🌫️' }; 
+            if (code >= 51 && code <= 67) return { emoji: '🌧️' }; 
+            if (code >= 71 && code <= 77) return { emoji: '❄️' }; 
+            if (code >= 80 && code <= 82) return { emoji: '🌦️' }; 
+            if (code >= 95 && code <= 99) return { emoji: '⛈️' }; 
             return { emoji: '🌤️' };
         }
 
-        // Run when page loads
-        fetchWeather();
+        fetchWeatherForCards();
     </script>
 </body>
 </html>
