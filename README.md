@@ -1,4 +1,4 @@
 # trip
 
-* Index.html is updated for new itinerary
+* Index.html is updated each time as needed
 * "old" folder has expired index.html files
