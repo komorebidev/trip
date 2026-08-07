@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Itinerary</title>
+    <style>
+        :root {
+            --bg-color: #fcf8f2;
+            --card-bg: #fffdf9;
+            --text-main: #3d332a;
+            --text-muted: #8c7a6b;
+            --accent: #b0572b;
+            --accent-bg: #fdf3ed;
+            --border-color: #e6dfd3;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: Georgia, serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 16px;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        header h1 {
+            font-size: 1.6rem;
+            margin: 0 0 4px 0;
+            color: var(--accent);
+            letter-spacing: 0.5px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin: 0;
+            font-style: italic;
+        }
+
+        .itinerary-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .day-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 3px 6px rgba(61, 51, 42, 0.03);
+            position: relative;
+        }
+
+        .day-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--accent);
+            border-top-left-radius: var(--border-radius);
+            border-bottom-left-radius: var(--border-radius);
+        }
+
+        .day-card.rest::before {
+            background-color: var(--text-muted);
+        }
+
+        .date-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 6px;
+        }
+
+        .date-header h2 {
+            font-size: 1.05rem;
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        .weather-badge {
+            font-size: 0.8rem;
+            background-color: var(--accent-bg);
+            color: var(--accent);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: -apple-system, sans-serif;
+            font-weight: 500;
+        }
+
+        .activities {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .activities li {
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .activities li:last-child {
+            margin-bottom: 0;
+        }
+
+        a.map-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-family: -apple-system, sans-serif;
+            font-weight: 500;
+            border-bottom: 1px dotted var(--accent);
+        }
+
+        a.map-link:hover {
+            background-color: var(--accent-bg);
+        }
+
+        .rest-text {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Schedule</h1>
+        <p>August 18 – August 27, 2026</p>
+    </header>
+
+    <div class="itinerary-container">
+
+        <!-- August 18 -->
+        <div class="day-card" data-date="2026-08-18">
+            <div class="date-header">
+                <h2>Aug 18 (Tue)</h2>
+                <div class="weather-badge">Loading...</div>
+            </div>
+            <ul class="activities">
+                <li>✈️ Airport Pickup at <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Haneda+Airport+Arrivals" target="_blank">Haneda Airport</a></li>
+            </ul>
+        </div>
+
+        <!-- August 19 -->
+        <div class="day-card" data-date="2026-08-19">
+            <div class="date-header">
+                <h2>Aug 19 (Wed)</h2>
+                <div class="weather-badge">Loading...</div>
+            </div>
+            <ul class="activities">
+                <li>🐾 Visit <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Ichikawa+Zoological+and+Botanical+Garden" target="_blank">Ichikawa Zoo</a></li>
+                <li>🛒 Shopping at <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Costco+Wholesale+Makuhari" target="_blank">Costco Makuhari</a></li>
+                <li>🛍️ Browse <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=MEGA+Don+Quijote+Narashino" target="_blank">MEGA Don Quijote Narashino</a></li>
+            </ul>
+        </div>
+
+        <!-- August 20 -->
+        <div class="day-card" data-date="2026-08-20">
+            <div class="date-header">
+                <h2>Aug 20 (Thu)</h2>
+                <div class="weather-badge">Loading...</div>
+            </div>
+            <ul class="activities">
+                <li>🐕 Hachiko Statue</li>
+                <li>⛩️ <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Meiji+Jingu+Tokyo" target="_blank">Meiji Shrine</a></li>
+                <li>👟 <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Onitsuka+Tiger+Ginza" target="_blank">Ginza Onitsuka Tiger</a></li>
+                <li>🥞 Omotesando <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=A+Happy+Pancake+Omotesando" target="_blank">A Happy Pancake</a> & Afternoon Tea</li>
+                <li>🌆 <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Shibuya+Sky" target="_blank">Shibuya Sky</a></li>
+            </ul>
+        </div>
+
+        <!-- August 21 -->
+        <div class="day-card" data-date="2026-08-21">
+            <div class="date-header">
+                <h2>Aug 21 (Fri)</h2>
+                <div class="weather-badge">Loading...</div>
+            </div>
+            <ul class="activities">
+                <li>❓ Undecided Day</li>
+            </ul>
+        </div>
+
+        <!-- August 22 -->
+        <div class="day-card" data-date="2026-08-22">
+            <div class="date-header">
+                <h2>Aug 22 (Sat)</h2>
+                <div class="weather-badge">Loading...</div>
+            </div>
+            <ul class="activities">
+                <li>🐠 <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Enoshima+Aquarium" target="_blank">Enoshima Aquarium</a></li>
+                <li>🎨 <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=POLA+Museum+of+Art+Hakone" target="_blank">POLA Museum of Art (Hakone)</a></li>
+            </ul>
+        </div>
+
+        <!-- August 23 -->
+        <div class="day-card" data-date="2026-08-23">
+            <div class="date-header">
+                <h2>Aug 23 (Sun)</h2>
+                <div class="weather-badge">Loading...</div>
+            </div>
+            <ul class="activities">
+                <li>❓ Undecided Day</li>
+            </ul>
+        </div>
+
+        <!-- August 24 -->
+        <div class="day-card" data-date="2026-08-24">
+            <div class="date-header">
+                <h2>Aug 24 (Mon)</h2>
+                <div class="weather-badge">Loading...</div>
+            </div>
+            <ul class="activities">
+                <li>❓ Undecided Day</li>
+            </ul>
+        </div>
+
+        <!-- August 25 -->
+        <div class="day-card" data-date="2026-08-25">
+            <div class="date-header">
+                <h2>Aug 25 (Tue)</h2>
+                <div class="weather-badge">Loading...</div>
+            </div>
+            <ul class="activities">
+                <li>❓ Undecided Day</li>
+            </ul>
+        </div>
+
+        <!-- August 26 -->
+        <div class="day-card rest" data-date="2026-08-26">
+            <div class="date-header">
+                <h2>Aug 26 (Wed)</h2>
+                <div class="weather-badge">Loading...</div>
+            </div>
+            <ul class="activities">
+                <li><span class="rest-text">🛌 Rest Day</span></li>
+            </ul>
+        </div>
+
+        <!-- August 27 -->
+        <div class="day-card" data-date="2026-08-27">
+            <div class="date-header">
+                <h2>Aug 27 (Thu)</h2>
+                <div class="weather-badge">Loading...</div>
+            </div>
+            <ul class="activities">
+                <li>🛍️ <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Haneda+Airport+Garden" target="_blank">Haneda Airport Garden Mall</a></li>
+                <li>🛫 <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Haneda+Airport" target="_blank">Departure Day</a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        async function fetchWeather() {
+            // Tokyo coordinates (Haneda/Central Tokyo area)
+            const lat = 35.6762;
+            const lon = 139.6503;
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Asia%2FTokyo`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (!data.daily) return;
+
+                const dates = data.daily.time;
+                const maxTemps = data.daily.temperature_2m_max;
+                const minTemps = data.daily.temperature_2m_min;
+                const weatherCodes = data.daily.weathercode;
+
+                // Loop through each card and match the date
+                const cards = document.querySelectorAll('.day-card');
+                cards.forEach(card => {
+                    const cardDate = card.getAttribute('data-date');
+                    const index = dates.indexOf(cardDate);
+                    
+                    if (index !== -1) {
+                        const max = Math.round(maxTemps[index]);
+                        const min = Math.round(minTemps[index]);
+                        const code = weatherCodes[index];
+                        
+                        const weatherInfo = getWeatherEmojiAndDesc(code);
+                        const badge = card.querySelector('.weather-badge');
+                        badge.textContent = `${weatherInfo.emoji} ${max}°C / ${min}°C`;
+                    }
+                });
+            } catch (error) {
+                console.error("Failed to fetch weather data:", error);
+                document.querySelectorAll('.weather-badge').forEach(badge => {
+                    badge.textContent = "Weather unavailable";
+                });
+            }
+        }
+
+        // Helper function to map WMO weather codes to emojis
+        function getWeatherEmojiAndDesc(code) {
+            // WMO Weather interpretation codes (Open-Meteo standard)
+            if (code === 0) return { emoji: '☀️' }; // Clear sky
+            if (code >= 1 && code <= 3) return { emoji: '⛅' }; // Mainly clear, partly cloudy, overcast
+            if (code === 45 || code === 48) return { emoji: '🌫️' }; // Fog
+            if (code >= 51 && code <= 67) return { emoji: '🌧️' }; // Drizzle / Rain
+            if (code >= 71 && code <= 77) return { emoji: '❄️' }; // Snow
+            if (code >= 80 && code <= 82) return { emoji: '🌦️' }; // Rain showers
+            if (code >= 95 && code <= 99) return { emoji: '⛈️' }; // Thunderstorm
+            return { emoji: '🌤️' };
+        }
+
+        // Run when page loads
+        fetchWeather();
+    </script>
+</body>
+</html>
