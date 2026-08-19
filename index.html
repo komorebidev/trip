@@ -187,25 +187,26 @@
         </div>
 
         <!-- August 21 -->
-        <div class="day-card" data-date="2026-08-21" data-location="Tokyo, Japan">
+        <div class="day-card" data-date="2026-08-21" data-location="Enoshima, Kanagawa, Japan">
             <div class="date-header">
                 <h2>Aug 21 (Fri)</h2>
                 <div class="weather-badge">Loading...</div>
             </div>
             <ul class="activities">
-                <li>❓ Undecided Day</li>
+                <li>🌊 <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Enoshima+Japan" target="_blank">Enoshima</a></li>
+                <li>⛩️ <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Kamakura+Japan" target="_blank">Kamakura</a></li>
+                <li>🛍️ <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Minami+Machida+Grandberry+Park" target="_blank">Minami Machida Grandberry Park</a></li>
             </ul>
         </div>
 
         <!-- August 22 -->
-        <div class="day-card" data-date="2026-08-22" data-location="Hakone, Kanagawa, Japan">
+        <div class="day-card" data-date="2026-08-22" data-location="Tokyo, Japan">
             <div class="date-header">
                 <h2>Aug 22 (Sat)</h2>
-                <div class="weather-badge">Loading...</div>
+                <div class="weather-badge">—</div>
             </div>
             <ul class="activities">
-                <li>🐠 <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Enoshima+Aquarium" target="_blank">Enoshima Aquarium</a></li>
-                <li>🎨 <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=POLA+Museum+of+Art+Hakone" target="_blank">POLA Museum of Art (Hakone)</a></li>
+                <li>📸 Passport Picture Taking <span class="rest-text">(Not a travel day)</span></li>
             </ul>
         </div>
 
@@ -277,7 +278,7 @@
                     const locationName = card.getAttribute('data-location');
                     const badge = card.querySelector('.weather-badge');
 
-                    if (!locationName) return;
+                    if (!locationName || badge.textContent === "—") return;
 
                     try {
                         const geoUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}&limit=1`;
@@ -347,34 +348,13 @@
         }
 
         function getWeatherEmojiAndDesc(code) {
-            if (code === 0) {
-                return { emoji: '☀️' };
-            }
-
-            if (code >= 1 && code <= 3) {
-                return { emoji: '⛅' };
-            }
-
-            if (code === 45 || code === 48) {
-                return { emoji: '🌫️' };
-            }
-
-            if (code >= 51 && code <= 67) {
-                return { emoji: '🌧️' };
-            }
-
-            if (code >= 71 && code <= 77) {
-                return { emoji: '❄️' };
-            }
-
-            if (code >= 80 && code <= 82) {
-                return { emoji: '🌦️' };
-            }
-
-            if (code >= 95 && code <= 99) {
-                return { emoji: '⛈️' };
-            }
-
+            if (code === 0) return { emoji: '☀️' };
+            if (code >= 1 && code <= 3) return { emoji: '⛅' };
+            if (code === 45 || code === 48) return { emoji: '🌫️' };
+            if (code >= 51 && code <= 67) return { emoji: '🌧️' };
+            if (code >= 71 && code <= 77) return { emoji: '❄️' };
+            if (code >= 80 && code <= 82) return { emoji: '🌦️' };
+            if (code >= 95 && code <= 99) return { emoji: '⛈️' };
             return { emoji: '🌤️' };
         }
 
