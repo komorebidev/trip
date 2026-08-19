@@ -181,6 +181,7 @@
                 <li>⛩️ <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Meiji+Jingu+Tokyo" target="_blank">Meiji Shrine</a></li>
                 <li>👟 <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Onitsuka+Tiger+Ginza" target="_blank">Ginza Onitsuka Tiger</a></li>
                 <li>🥞 Omotesando <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=A+Happy+Pancake+Omotesando" target="_blank">A Happy Pancake</a> & Afternoon Tea</li>
+                <li>🥗 <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Crisp+Salad+Works+Omotesando" target="_blank">Crisp Salad Works Omotesando</a> <span class="rest-text">(Backup Restaurant)</span></li>
                 <li>🌆 <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Shibuya+Sky" target="_blank">Shibuya Sky</a></li>
             </ul>
         </div>
@@ -280,9 +281,13 @@
 
                     try {
                         const geoUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}&limit=1`;
+
                         const geoResponse = await fetch(geoUrl, {
-                            headers: { 'User-Agent': 'ItineraryWeatherApp/1.0' }
+                            headers: {
+                                'User-Agent': 'ItineraryWeatherApp/1.0'
+                            }
                         });
+
                         const geoData = await geoResponse.json();
 
                         if (!geoData || geoData.length === 0) {
@@ -293,7 +298,12 @@
                         const lat = geoData[0].lat;
                         const lon = geoData[0].lon;
 
-                        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=Asia%2FTokyo&forecast_days=16`;
+                        const weatherUrl =
+                            `https://api.open-meteo.com/v1/forecast?` +
+                            `latitude=${lat}&longitude=${lon}` +
+                            `&daily=temperature_2m_max,temperature_2m_min,weathercode` +
+                            `&timezone=Asia%2FTokyo&forecast_days=16`;
+
                         const weatherResponse = await fetch(weatherUrl);
                         const weatherData = await weatherResponse.json();
 
@@ -313,33 +323,63 @@
                             const max = Math.round(maxTemps[dateIndex]);
                             const min = Math.round(minTemps[dateIndex]);
                             const code = weatherCodes[dateIndex];
-                            
+
                             const weatherInfo = getWeatherEmojiAndDesc(code);
-                            badge.textContent = `${weatherInfo.emoji} ${max}°C / ${min}°C`;
+
+                            badge.textContent =
+                                `${weatherInfo.emoji} ${max}°C / ${min}°C`;
                         } else {
                             badge.textContent = "Out of range";
                         }
 
                     } catch (error) {
-                        console.error("Error loading weather for:", locationName, error);
+                        console.error(
+                            "Error loading weather for:",
+                            locationName,
+                            error
+                        );
+
                         badge.textContent = "Unavailable";
                     }
-                }, index * 1000); // 1-second stagger to respect OpenStreetMap rate limits
+
+                }, index * 1000);
             });
         }
 
         function getWeatherEmojiAndDesc(code) {
-            if (code === 0) return { emoji: '☀️' }; 
-            if (code >= 1 && code <= 3) return { emoji: '⛅' }; 
-            if (code === 45 || code === 48) return { emoji: '🌫️' }; 
-            if (code >= 51 && code <= 67) return { emoji: '🌧️' }; 
-            if (code >= 71 && code <= 77) return { emoji: '❄️' }; 
-            if (code >= 80 && code <= 82) return { emoji: '🌦️' }; 
-            if (code >= 95 && code <= 99) return { emoji: '⛈️' }; 
+            if (code === 0) {
+                return { emoji: '☀️' };
+            }
+
+            if (code >= 1 && code <= 3) {
+                return { emoji: '⛅' };
+            }
+
+            if (code === 45 || code === 48) {
+                return { emoji: '🌫️' };
+            }
+
+            if (code >= 51 && code <= 67) {
+                return { emoji: '🌧️' };
+            }
+
+            if (code >= 71 && code <= 77) {
+                return { emoji: '❄️' };
+            }
+
+            if (code >= 80 && code <= 82) {
+                return { emoji: '🌦️' };
+            }
+
+            if (code >= 95 && code <= 99) {
+                return { emoji: '⛈️' };
+            }
+
             return { emoji: '🌤️' };
         }
 
         fetchWeatherForCards();
     </script>
+
 </body>
 </html>
