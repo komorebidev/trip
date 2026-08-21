@@ -62,10 +62,11 @@
             border: 1px solid var(--border-color);
             box-shadow: 0 3px 6px rgba(61, 51, 42, 0.03);
             position: relative;
+
             transition:
-                filter 0.3s ease,
-                opacity 0.3s ease,
-                transform 0.2s ease;
+                opacity 0.25s ease,
+                transform 0.2s ease,
+                background-color 0.25s ease;
         }
 
         .day-card::before {
@@ -84,58 +85,103 @@
             background-color: var(--text-muted);
         }
 
-        /* =========================
+        /* ============================
            PAST DAY HIDDEN STATE
-           ========================= */
+           ============================ */
 
         .day-card.past:not(.revealed) {
-            filter: blur(8px);
-            opacity: 0.25;
             cursor: pointer;
-            user-select: none;
+            opacity: 0.75;
+        }
+
+        /*
+         * Cross out the contents of past days.
+         * The card itself stays readable enough to click.
+         */
+        .day-card.past:not(.revealed) .date-header h2,
+        .day-card.past:not(.revealed) .activities,
+        .day-card.past:not(.revealed) .weather-badge,
+        .day-card.past:not(.revealed) .rest-text,
+        .day-card.past:not(.revealed) .map-link {
+            text-decoration: line-through;
+            text-decoration-thickness: 2px;
+            text-decoration-color: var(--accent);
         }
 
         .day-card.past:not(.revealed):hover {
-            opacity: 0.4;
+            opacity: 0.9;
             transform: scale(0.995);
         }
 
-        /* =========================
+        /* ============================
            PAST DAY REVEALED STATE
-           ========================= */
+           ============================ */
 
         .day-card.past.revealed {
-            filter: none;
-            opacity: 1;
             cursor: pointer;
-            user-select: auto;
+            opacity: 1;
         }
 
-        /* Message displayed over hidden days */
+        .day-card.past.revealed .date-header h2,
+        .day-card.past.revealed .activities,
+        .day-card.past.revealed .weather-badge,
+        .day-card.past.revealed .rest-text,
+        .day-card.past.revealed .map-link {
+            text-decoration: none;
+        }
+
+        /* ============================
+           CLICK HINT
+           ============================ */
+
         .day-card.past:not(.revealed)::after {
             content: "Click to reveal";
             position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10;
+            right: 12px;
+            top: 12px;
 
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 0.85rem;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            font-size: 0.7rem;
             font-weight: 600;
             color: var(--accent);
 
-            background: rgba(255, 253, 249, 0.92);
-            padding: 7px 12px;
-            border-radius: 6px;
+            background: var(--accent-bg);
+            padding: 3px 7px;
+            border-radius: 4px;
+
             border: 1px solid var(--border-color);
 
-            box-shadow: 0 2px 8px rgba(61, 51, 42, 0.08);
+            pointer-events: none;
+        }
 
-            white-space: nowrap;
+        .day-card.past.revealed::after {
+            content: "Click to hide";
+            position: absolute;
+            right: 12px;
+            top: 12px;
 
-            /* Keep the label itself sharp */
-            filter: none;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-muted);
+
+            background: var(--bg-color);
+            padding: 3px 7px;
+            border-radius: 4px;
+
+            border: 1px solid var(--border-color);
+
+            pointer-events: none;
         }
 
         .date-header {
@@ -334,7 +380,6 @@
 
 
         <!-- August 21 -->
-        <!-- Exchanged with August 22 -->
         <div class="day-card"
              data-date="2026-08-21"
              data-location="Tokyo, Japan">
@@ -354,7 +399,6 @@
 
 
         <!-- August 22 -->
-        <!-- Exchanged with August 21 -->
         <div class="day-card"
              data-date="2026-08-22"
              data-location="Enoshima, Kanagawa, Japan">
@@ -506,40 +550,38 @@
 
     <script>
 
-        /* ==========================================
-           PAST DAY BLUR / REVEAL / HIDE
-           ========================================== */
+        /* =========================================
+           PAST DAY STRIKETHROUGH
+           ========================================= */
 
-        function setupPastDayBlur() {
+        function setupPastDayBehavior() {
 
             const today = new Date();
 
-            // Remove the time portion so only the calendar date matters.
+            // Normalize today's date to midnight.
             today.setHours(0, 0, 0, 0);
 
-            const cards = document.querySelectorAll('.day-card');
+            const cards =
+                document.querySelectorAll('.day-card');
 
             cards.forEach(card => {
 
-                const cardDateString = card.getAttribute('data-date');
+                const dateString =
+                    card.getAttribute('data-date');
 
-                if (!cardDateString) return;
+                if (!dateString) return;
 
-                // Convert YYYY-MM-DD into a local date.
                 const [year, month, day] =
-                    cardDateString.split('-').map(Number);
+                    dateString.split('-').map(Number);
 
-                const cardDate = new Date(
-                    year,
-                    month - 1,
-                    day
-                );
+                const cardDate =
+                    new Date(year, month - 1, day);
 
                 cardDate.setHours(0, 0, 0, 0);
 
                 /*
-                 * If the itinerary date is before today,
-                 * mark it as a past day.
+                 * Anything before today is considered a
+                 * past day.
                  */
                 if (cardDate < today) {
 
@@ -548,15 +590,15 @@
                     /*
                      * Clicking toggles:
                      *
-                     * Hidden → Revealed
-                     * Revealed → Hidden
+                     * Crossed out → Normal
+                     * Normal → Crossed out
                      */
                     card.addEventListener('click', function(event) {
 
                         /*
-                         * If the card is already revealed and
-                         * the user clicked a Google Maps link,
-                         * allow the link to work normally.
+                         * If the card is currently revealed and
+                         * the user clicks a map link, let the link
+                         * work normally.
                          */
                         if (
                             card.classList.contains('revealed') &&
@@ -573,9 +615,9 @@
         }
 
 
-        /* ==========================================
+        /* =========================================
            WEATHER
-           ========================================== */
+           ========================================= */
 
         async function fetchWeatherForCards() {
 
@@ -604,11 +646,12 @@
 
                     try {
 
-                        /* Get coordinates from Nominatim */
+                        /*
+                         * Nominatim geocoding
+                         */
                         const geoUrl =
                             `https://nominatim.openstreetmap.org/search?` +
-                            `format=json` +
-                            `q=${encodeURIComponent(locationName)}` +
+                            `format=json&q=${encodeURIComponent(locationName)}` +
                             `&limit=1`;
 
                         const geoResponse =
@@ -626,24 +669,28 @@
                             !geoData ||
                             geoData.length === 0
                         ) {
+
                             badge.textContent =
                                 "Location not found";
 
                             return;
                         }
 
-                        const lat = geoData[0].lat;
-                        const lon = geoData[0].lon;
+                        const lat =
+                            geoData[0].lat;
 
-                        /* Get weather from Open-Meteo */
+                        const lon =
+                            geoData[0].lon;
+
+
+                        /*
+                         * Open-Meteo weather
+                         */
                         const weatherUrl =
                             `https://api.open-meteo.com/v1/forecast?` +
-                            `latitude=${lat}` +
-                            `&longitude=${lon}` +
-                            `&daily=temperature_2m_max,` +
-                            `temperature_2m_min,weathercode` +
-                            `&timezone=Asia%2FTokyo` +
-                            `&forecast_days=16`;
+                            `latitude=${lat}&longitude=${lon}` +
+                            `&daily=temperature_2m_max,temperature_2m_min,weathercode` +
+                            `&timezone=Asia%2FTokyo&forecast_days=16`;
 
                         const weatherResponse =
                             await fetch(weatherUrl);
@@ -659,6 +706,7 @@
                             return;
                         }
 
+
                         const dates =
                             weatherData.daily.time;
 
@@ -671,8 +719,10 @@
                         const weatherCodes =
                             weatherData.daily.weathercode;
 
+
                         const dateIndex =
                             dates.indexOf(cardDate);
+
 
                         if (dateIndex !== -1) {
 
@@ -689,8 +739,10 @@
                             const code =
                                 weatherCodes[dateIndex];
 
+
                             const weatherInfo =
                                 getWeatherEmojiAndDesc(code);
+
 
                             badge.textContent =
                                 `${weatherInfo.emoji} ` +
@@ -715,13 +767,14 @@
                     }
 
                 }, index * 1000);
+
             });
         }
 
 
-        /* ==========================================
-           WEATHER EMOJIS
-           ========================================== */
+        /* =========================================
+           WEATHER ICONS
+           ========================================= */
 
         function getWeatherEmojiAndDesc(code) {
 
@@ -750,11 +803,11 @@
         }
 
 
-        /* ==========================================
-           INITIALIZE
-           ========================================== */
+        /* =========================================
+           START
+           ========================================= */
 
-        setupPastDayBlur();
+        setupPastDayBehavior();
         fetchWeatherForCards();
 
     </script>
