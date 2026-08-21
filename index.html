@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedule</title>
+
     <style>
         :root {
             --bg-color: #fcf8f2;
@@ -61,8 +62,6 @@
             border: 1px solid var(--border-color);
             box-shadow: 0 3px 6px rgba(61, 51, 42, 0.03);
             position: relative;
-
-            /* Smooth reveal animation */
             transition:
                 filter 0.3s ease,
                 opacity 0.3s ease,
@@ -85,35 +84,58 @@
             background-color: var(--text-muted);
         }
 
-        /*
-         * Past days:
-         * Blur the contents and slightly fade the card.
-         * The card itself remains clickable.
-         */
+        /* =========================
+           PAST DAY HIDDEN STATE
+           ========================= */
+
         .day-card.past:not(.revealed) {
             filter: blur(8px);
-            opacity: 0.35;
+            opacity: 0.25;
             cursor: pointer;
             user-select: none;
         }
 
-        /*
-         * Add a subtle hover effect to indicate
-         * that a blurred past day can be clicked.
-         */
         .day-card.past:not(.revealed):hover {
-            opacity: 0.55;
+            opacity: 0.4;
             transform: scale(0.995);
         }
 
-        /*
-         * When revealed, restore everything.
-         */
+        /* =========================
+           PAST DAY REVEALED STATE
+           ========================= */
+
         .day-card.past.revealed {
             filter: none;
             opacity: 1;
-            cursor: default;
+            cursor: pointer;
             user-select: auto;
+        }
+
+        /* Message displayed over hidden days */
+        .day-card.past:not(.revealed)::after {
+            content: "Click to reveal";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+
+            background: rgba(255, 253, 249, 0.92);
+            padding: 7px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+
+            box-shadow: 0 2px 8px rgba(61, 51, 42, 0.08);
+
+            white-space: nowrap;
+
+            /* Keep the label itself sharp */
+            filter: none;
         }
 
         .date-header {
@@ -172,33 +194,9 @@
             color: var(--text-muted);
             font-style: italic;
         }
-
-        /*
-         * Small hint shown on blurred past days.
-         */
-        .past:not(.revealed)::after {
-            content: "Click to reveal";
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10;
-
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--accent);
-            background: rgba(255, 253, 249, 0.92);
-            padding: 7px 12px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 2px 8px rgba(61, 51, 42, 0.08);
-
-            white-space: nowrap;
-            filter: none;
-        }
     </style>
 </head>
+
 <body>
 
     <header>
@@ -209,245 +207,511 @@
     <div class="itinerary-container">
 
         <!-- August 18 -->
-        <div class="day-card" data-date="2026-08-18" data-location="Haneda Airport, Tokyo, Japan">
+        <div class="day-card"
+             data-date="2026-08-18"
+             data-location="Haneda Airport, Tokyo, Japan">
+
             <div class="date-header">
                 <h2>Aug 18 (Tue)</h2>
                 <div class="weather-badge">Loading...</div>
             </div>
+
             <ul class="activities">
-                <li>✈️ Airport Pickup at <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Haneda+Airport+Arrivals" target="_blank">Haneda Airport</a></li>
+                <li>
+                    ✈️ Airport Pickup at
+                    <a class="map-link"
+                       href="https://www.google.com/maps/search/?api=1&query=Haneda+Airport+Arrivals"
+                       target="_blank">
+                        Haneda Airport
+                    </a>
+                </li>
             </ul>
         </div>
 
+
         <!-- August 19 -->
-        <div class="day-card" data-date="2026-08-19" data-location="Ichikawa, Chiba, Japan">
+        <div class="day-card"
+             data-date="2026-08-19"
+             data-location="Ichikawa, Chiba, Japan">
+
             <div class="date-header">
                 <h2>Aug 19 (Wed)</h2>
                 <div class="weather-badge">Loading...</div>
             </div>
+
             <ul class="activities">
-                <li>🐾 Visit <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Ichikawa+Zoological+and+Botanical+Garden" target="_blank">Ichikawa Zoo</a></li>
-                <li>🛒 Shopping at <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Costco+Wholesale+Makuhari" target="_blank">Costco Makuhari</a></li>
-                <li>🛍️ Browse <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=MEGA+Don+Quijote+Narashino" target="_blank">MEGA Don Quijote Narashino</a></li>
+                <li>
+                    🐾 Visit
+                    <a class="map-link"
+                       href="https://www.google.com/maps/search/?api=1&query=Ichikawa+Zoological+and+Botanical+Garden"
+                       target="_blank">
+                        Ichikawa Zoo
+                    </a>
+                </li>
+
+                <li>
+                    🛒 Shopping at
+                    <a class="map-link"
+                       href="https://www.google.com/maps/search/?api=1&query=Costco+Wholesale+Makuhari"
+                       target="_blank">
+                        Costco Makuhari
+                    </a>
+                </li>
+
+                <li>
+                    🛍️ Browse
+                    <a class="map-link"
+                       href="https://www.google.com/maps/search/?api=1&query=MEGA+Don+Quijote+Narashino"
+                       target="_blank">
+                        MEGA Don Quijote Narashino
+                    </a>
+                </li>
             </ul>
         </div>
 
+
         <!-- August 20 -->
-        <div class="day-card" data-date="2026-08-20" data-location="Shibuya, Tokyo, Japan">
+        <div class="day-card"
+             data-date="2026-08-20"
+             data-location="Shibuya, Tokyo, Japan">
+
             <div class="date-header">
                 <h2>Aug 20 (Thu)</h2>
                 <div class="weather-badge">Loading...</div>
             </div>
+
             <ul class="activities">
                 <li>🐕 Hachiko Statue</li>
-                <li>⛩️ <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Meiji+Jingu+Tokyo" target="_blank">Meiji Shrine</a></li>
-                <li>👟 <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Onitsuka+Tiger+Ginza" target="_blank">Ginza Onitsuka Tiger</a></li>
-                <li>🥞 Omotesando <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=A+Happy+Pancake+Omotesando" target="_blank">A Happy Pancake</a> & Afternoon Tea</li>
-                <li>🥗 <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Crisp+Salad+Works+Omotesando" target="_blank">Crisp Salad Works Omotesando</a> <span class="rest-text">(Backup Restaurant)</span></li>
-                <li>🌆 <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Shibuya+Sky" target="_blank">Shibuya Sky</a></li>
+
+                <li>
+                    ⛩️
+                    <a class="map-link"
+                       href="https://www.google.com/maps/search/?api=1&query=Meiji+Jingu+Tokyo"
+                       target="_blank">
+                        Meiji Shrine
+                    </a>
+                </li>
+
+                <li>
+                    👟
+                    <a class="map-link"
+                       href="https://www.google.com/maps/search/?api=1&query=Onitsuka+Tiger+Ginza"
+                       target="_blank">
+                        Ginza Onitsuka Tiger
+                    </a>
+                </li>
+
+                <li>
+                    🥞 Omotesando
+                    <a class="map-link"
+                       href="https://www.google.com/maps/search/?api=1&query=A+Happy+Pancake+Omotesando"
+                       target="_blank">
+                        A Happy Pancake
+                    </a>
+                    & Afternoon Tea
+                </li>
+
+                <li>
+                    🥗
+                    <a class="map-link"
+                       href="https://www.google.com/maps/search/?api=1&query=Crisp+Salad+Works+Omotesando"
+                       target="_blank">
+                        Crisp Salad Works Omotesando
+                    </a>
+                    <span class="rest-text">(Backup Restaurant)</span>
+                </li>
+
+                <li>
+                    🌆
+                    <a class="map-link"
+                       href="https://www.google.com/maps/search/?api=1&query=Shibuya+Sky"
+                       target="_blank">
+                        Shibuya Sky
+                    </a>
+                </li>
             </ul>
         </div>
 
-        <!-- August 21 - Exchanged with August 22 -->
-        <div class="day-card" data-date="2026-08-21" data-location="Tokyo, Japan">
+
+        <!-- August 21 -->
+        <!-- Exchanged with August 22 -->
+        <div class="day-card"
+             data-date="2026-08-21"
+             data-location="Tokyo, Japan">
+
             <div class="date-header">
                 <h2>Aug 21 (Fri)</h2>
                 <div class="weather-badge">—</div>
             </div>
+
             <ul class="activities">
-                <li>📸 Passport Picture Taking <span class="rest-text">(Not a travel day)</span></li>
+                <li>
+                    📸 Passport Picture Taking
+                    <span class="rest-text">(Not a travel day)</span>
+                </li>
             </ul>
         </div>
 
-        <!-- August 22 - Exchanged with August 21 -->
-        <div class="day-card" data-date="2026-08-22" data-location="Enoshima, Kanagawa, Japan">
+
+        <!-- August 22 -->
+        <!-- Exchanged with August 21 -->
+        <div class="day-card"
+             data-date="2026-08-22"
+             data-location="Enoshima, Kanagawa, Japan">
+
             <div class="date-header">
                 <h2>Aug 22 (Sat)</h2>
                 <div class="weather-badge">Loading...</div>
             </div>
+
             <ul class="activities">
-                <li>🌊 <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Enoshima+Japan" target="_blank">Enoshima</a></li>
-                <li>⛩️ <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Kamakura+Japan" target="_blank">Kamakura</a></li>
-                <li>🛍️ <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Minami+Machida+Grandberry+Park" target="_blank">Minami Machida Grandberry Park</a></li>
+                <li>
+                    🌊
+                    <a class="map-link"
+                       href="https://www.google.com/maps/search/?api=1&query=Enoshima+Japan"
+                       target="_blank">
+                        Enoshima
+                    </a>
+                </li>
+
+                <li>
+                    ⛩️
+                    <a class="map-link"
+                       href="https://www.google.com/maps/search/?api=1&query=Kamakura+Japan"
+                       target="_blank">
+                        Kamakura
+                    </a>
+                </li>
+
+                <li>
+                    🛍️
+                    <a class="map-link"
+                       href="https://www.google.com/maps/search/?api=1&query=Minami+Machida+Grandberry+Park"
+                       target="_blank">
+                        Minami Machida Grandberry Park
+                    </a>
+                </li>
             </ul>
         </div>
 
+
         <!-- August 23 -->
-        <div class="day-card" data-date="2026-08-23" data-location="Nikko, Tochigi, Japan">
+        <div class="day-card"
+             data-date="2026-08-23"
+             data-location="Nikko, Tochigi, Japan">
+
             <div class="date-header">
                 <h2>Aug 23 (Sun)</h2>
                 <div class="weather-badge">Loading...</div>
             </div>
+
             <ul class="activities">
-                <li>⛩️ <span class="rest-text">Maybe Nikko</span></li>
+                <li>
+                    ⛩️
+                    <span class="rest-text">Maybe Nikko</span>
+                </li>
             </ul>
         </div>
 
+
         <!-- August 24 -->
-        <div class="day-card" data-date="2026-08-24" data-location="Lake Yamanakako, Yamanashi, Japan">
+        <div class="day-card"
+             data-date="2026-08-24"
+             data-location="Lake Yamanakako, Yamanashi, Japan">
+
             <div class="date-header">
                 <h2>Aug 24 (Mon)</h2>
                 <div class="weather-badge">Loading...</div>
             </div>
+
             <ul class="activities">
-                <li>🌊 <span class="rest-text">Maybe Lake Yamanakako</span></li>
+                <li>
+                    🌊
+                    <span class="rest-text">Maybe Lake Yamanakako</span>
+                </li>
             </ul>
         </div>
 
+
         <!-- August 25 -->
-        <div class="day-card" data-date="2026-08-25" data-location="Lake Yamanakako, Yamanashi, Japan">
+        <div class="day-card"
+             data-date="2026-08-25"
+             data-location="Lake Yamanakako, Yamanashi, Japan">
+
             <div class="date-header">
                 <h2>Aug 25 (Tue)</h2>
                 <div class="weather-badge">Loading...</div>
             </div>
+
             <ul class="activities">
-                <li>🌊 <span class="rest-text">Maybe Lake Yamanakako</span></li>
+                <li>
+                    🌊
+                    <span class="rest-text">Maybe Lake Yamanakako</span>
+                </li>
             </ul>
         </div>
 
+
         <!-- August 26 -->
-        <div class="day-card rest" data-date="2026-08-26" data-location="Tokyo, Japan">
+        <div class="day-card rest"
+             data-date="2026-08-26"
+             data-location="Tokyo, Japan">
+
             <div class="date-header">
                 <h2>Aug 26 (Wed)</h2>
                 <div class="weather-badge">Loading...</div>
             </div>
+
             <ul class="activities">
-                <li><span class="rest-text">🛌 Rest Day</span></li>
+                <li>
+                    <span class="rest-text">🛌 Rest Day</span>
+                </li>
             </ul>
         </div>
 
+
         <!-- August 27 -->
-        <div class="day-card" data-date="2026-08-27" data-location="Haneda Airport, Tokyo, Japan">
+        <div class="day-card"
+             data-date="2026-08-27"
+             data-location="Haneda Airport, Tokyo, Japan">
+
             <div class="date-header">
                 <h2>Aug 27 (Thu)</h2>
                 <div class="weather-badge">Loading...</div>
             </div>
+
             <ul class="activities">
-                <li>🛍️ <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Haneda+Airport+Garden" target="_blank">Haneda Airport Garden Mall</a></li>
-                <li>🛫 <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Haneda+Airport" target="_blank">Departure Day</a></li>
+                <li>
+                    🛍️
+                    <a class="map-link"
+                       href="https://www.google.com/maps/search/?api=1&query=Haneda+Airport+Garden"
+                       target="_blank">
+                        Haneda Airport Garden Mall
+                    </a>
+                </li>
+
+                <li>
+                    🛫
+                    <a class="map-link"
+                       href="https://www.google.com/maps/search/?api=1&query=Haneda+Airport"
+                       target="_blank">
+                        Departure Day
+                    </a>
+                </li>
             </ul>
         </div>
 
     </div>
 
+
     <script>
-        /*
-         * Automatically identify past days.
-         *
-         * Today's date is determined from the user's local device.
-         * Any card whose date is before today gets the "past" class.
-         */
+
+        /* ==========================================
+           PAST DAY BLUR / REVEAL / HIDE
+           ========================================== */
+
         function setupPastDayBlur() {
+
             const today = new Date();
 
-            // Normalize today to midnight so time of day doesn't matter.
+            // Remove the time portion so only the calendar date matters.
             today.setHours(0, 0, 0, 0);
 
             const cards = document.querySelectorAll('.day-card');
 
             cards.forEach(card => {
+
                 const cardDateString = card.getAttribute('data-date');
 
                 if (!cardDateString) return;
 
-                // Parse YYYY-MM-DD safely in local time.
-                const [year, month, day] = cardDateString.split('-').map(Number);
-                const cardDate = new Date(year, month - 1, day);
+                // Convert YYYY-MM-DD into a local date.
+                const [year, month, day] =
+                    cardDateString.split('-').map(Number);
+
+                const cardDate = new Date(
+                    year,
+                    month - 1,
+                    day
+                );
+
                 cardDate.setHours(0, 0, 0, 0);
 
+                /*
+                 * If the itinerary date is before today,
+                 * mark it as a past day.
+                 */
                 if (cardDate < today) {
+
                     card.classList.add('past');
 
                     /*
-                     * Clicking a past day reveals it.
-                     * Stop propagation if the user clicked a link
-                     * inside an already revealed card.
+                     * Clicking toggles:
+                     *
+                     * Hidden → Revealed
+                     * Revealed → Hidden
                      */
                     card.addEventListener('click', function(event) {
-                        if (!card.classList.contains('revealed')) {
-                            event.preventDefault();
-                            card.classList.add('revealed');
+
+                        /*
+                         * If the card is already revealed and
+                         * the user clicked a Google Maps link,
+                         * allow the link to work normally.
+                         */
+                        if (
+                            card.classList.contains('revealed') &&
+                            event.target.closest('a')
+                        ) {
+                            return;
                         }
+
+                        card.classList.toggle('revealed');
+
                     });
                 }
             });
         }
 
 
+        /* ==========================================
+           WEATHER
+           ========================================== */
+
         async function fetchWeatherForCards() {
-            const cards = document.querySelectorAll('.day-card');
+
+            const cards =
+                document.querySelectorAll('.day-card');
 
             cards.forEach((card, index) => {
-                setTimeout(async () => {
-                    const cardDate = card.getAttribute('data-date');
-                    const locationName = card.getAttribute('data-location');
-                    const badge = card.querySelector('.weather-badge');
 
-                    if (!locationName || badge.textContent === "—") return;
+                setTimeout(async () => {
+
+                    const cardDate =
+                        card.getAttribute('data-date');
+
+                    const locationName =
+                        card.getAttribute('data-location');
+
+                    const badge =
+                        card.querySelector('.weather-badge');
+
+                    if (
+                        !locationName ||
+                        badge.textContent === "—"
+                    ) {
+                        return;
+                    }
 
                     try {
+
+                        /* Get coordinates from Nominatim */
                         const geoUrl =
-                            `https://nominatim.openstreetmap.org/search?format=json&q=` +
-                            `${encodeURIComponent(locationName)}&limit=1`;
+                            `https://nominatim.openstreetmap.org/search?` +
+                            `format=json` +
+                            `q=${encodeURIComponent(locationName)}` +
+                            `&limit=1`;
 
-                        const geoResponse = await fetch(geoUrl, {
-                            headers: {
-                                'User-Agent': 'ItineraryWeatherApp/1.0'
-                            }
-                        });
+                        const geoResponse =
+                            await fetch(geoUrl, {
+                                headers: {
+                                    'User-Agent':
+                                        'ItineraryWeatherApp/1.0'
+                                }
+                            });
 
-                        const geoData = await geoResponse.json();
+                        const geoData =
+                            await geoResponse.json();
 
-                        if (!geoData || geoData.length === 0) {
-                            badge.textContent = "Location not found";
+                        if (
+                            !geoData ||
+                            geoData.length === 0
+                        ) {
+                            badge.textContent =
+                                "Location not found";
+
                             return;
                         }
 
                         const lat = geoData[0].lat;
                         const lon = geoData[0].lon;
 
+                        /* Get weather from Open-Meteo */
                         const weatherUrl =
                             `https://api.open-meteo.com/v1/forecast?` +
-                            `latitude=${lat}&longitude=${lon}` +
-                            `&daily=temperature_2m_max,temperature_2m_min,weathercode` +
-                            `&timezone=Asia%2FTokyo&forecast_days=16`;
+                            `latitude=${lat}` +
+                            `&longitude=${lon}` +
+                            `&daily=temperature_2m_max,` +
+                            `temperature_2m_min,weathercode` +
+                            `&timezone=Asia%2FTokyo` +
+                            `&forecast_days=16`;
 
-                        const weatherResponse = await fetch(weatherUrl);
-                        const weatherData = await weatherResponse.json();
+                        const weatherResponse =
+                            await fetch(weatherUrl);
+
+                        const weatherData =
+                            await weatherResponse.json();
 
                         if (!weatherData.daily) {
-                            badge.textContent = "Unavailable";
+
+                            badge.textContent =
+                                "Unavailable";
+
                             return;
                         }
 
-                        const dates = weatherData.daily.time;
-                        const maxTemps = weatherData.daily.temperature_2m_max;
-                        const minTemps = weatherData.daily.temperature_2m_min;
-                        const weatherCodes = weatherData.daily.weathercode;
+                        const dates =
+                            weatherData.daily.time;
 
-                        const dateIndex = dates.indexOf(cardDate);
+                        const maxTemps =
+                            weatherData.daily.temperature_2m_max;
+
+                        const minTemps =
+                            weatherData.daily.temperature_2m_min;
+
+                        const weatherCodes =
+                            weatherData.daily.weathercode;
+
+                        const dateIndex =
+                            dates.indexOf(cardDate);
 
                         if (dateIndex !== -1) {
-                            const max = Math.round(maxTemps[dateIndex]);
-                            const min = Math.round(minTemps[dateIndex]);
-                            const code = weatherCodes[dateIndex];
 
-                            const weatherInfo = getWeatherEmojiAndDesc(code);
+                            const max =
+                                Math.round(
+                                    maxTemps[dateIndex]
+                                );
+
+                            const min =
+                                Math.round(
+                                    minTemps[dateIndex]
+                                );
+
+                            const code =
+                                weatherCodes[dateIndex];
+
+                            const weatherInfo =
+                                getWeatherEmojiAndDesc(code);
 
                             badge.textContent =
-                                `${weatherInfo.emoji} ${max}°C / ${min}°C`;
+                                `${weatherInfo.emoji} ` +
+                                `${max}°C / ${min}°C`;
+
                         } else {
-                            badge.textContent = "Out of range";
+
+                            badge.textContent =
+                                "Out of range";
                         }
 
                     } catch (error) {
+
                         console.error(
                             "Error loading weather for:",
                             locationName,
                             error
                         );
 
-                        badge.textContent = "Unavailable";
+                        badge.textContent =
+                            "Unavailable";
                     }
 
                 }, index * 1000);
@@ -455,23 +719,44 @@
         }
 
 
+        /* ==========================================
+           WEATHER EMOJIS
+           ========================================== */
+
         function getWeatherEmojiAndDesc(code) {
-            if (code === 0) return { emoji: '☀️' };
-            if (code >= 1 && code <= 3) return { emoji: '⛅' };
-            if (code === 45 || code === 48) return { emoji: '🌫️' };
-            if (code >= 51 && code <= 67) return { emoji: '🌧️' };
-            if (code >= 71 && code <= 77) return { emoji: '❄️' };
-            if (code >= 80 && code <= 82) return { emoji: '🌦️' };
-            if (code >= 95 && code <= 99) return { emoji: '⛈️' };
+
+            if (code === 0)
+                return { emoji: '☀️' };
+
+            if (code >= 1 && code <= 3)
+                return { emoji: '⛅' };
+
+            if (code === 45 || code === 48)
+                return { emoji: '🌫️' };
+
+            if (code >= 51 && code <= 67)
+                return { emoji: '🌧️' };
+
+            if (code >= 71 && code <= 77)
+                return { emoji: '❄️' };
+
+            if (code >= 80 && code <= 82)
+                return { emoji: '🌦️' };
+
+            if (code >= 95 && code <= 99)
+                return { emoji: '⛈️' };
+
             return { emoji: '🌤️' };
         }
 
 
-        // Initialize past-day behavior immediately.
-        setupPastDayBlur();
+        /* ==========================================
+           INITIALIZE
+           ========================================== */
 
-        // Load weather information.
+        setupPastDayBlur();
         fetchWeatherForCards();
+
     </script>
 
 </body>
