@@ -61,6 +61,12 @@
             border: 1px solid var(--border-color);
             box-shadow: 0 3px 6px rgba(61, 51, 42, 0.03);
             position: relative;
+
+            /* Smooth reveal animation */
+            transition:
+                filter 0.3s ease,
+                opacity 0.3s ease,
+                transform 0.2s ease;
         }
 
         .day-card::before {
@@ -77,6 +83,37 @@
 
         .day-card.rest::before {
             background-color: var(--text-muted);
+        }
+
+        /*
+         * Past days:
+         * Blur the contents and slightly fade the card.
+         * The card itself remains clickable.
+         */
+        .day-card.past:not(.revealed) {
+            filter: blur(8px);
+            opacity: 0.35;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /*
+         * Add a subtle hover effect to indicate
+         * that a blurred past day can be clicked.
+         */
+        .day-card.past:not(.revealed):hover {
+            opacity: 0.55;
+            transform: scale(0.995);
+        }
+
+        /*
+         * When revealed, restore everything.
+         */
+        .day-card.past.revealed {
+            filter: none;
+            opacity: 1;
+            cursor: default;
+            user-select: auto;
         }
 
         .date-header {
@@ -135,6 +172,31 @@
             color: var(--text-muted);
             font-style: italic;
         }
+
+        /*
+         * Small hint shown on blurred past days.
+         */
+        .past:not(.revealed)::after {
+            content: "Click to reveal";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            background: rgba(255, 253, 249, 0.92);
+            padding: 7px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(61, 51, 42, 0.08);
+
+            white-space: nowrap;
+            filter: none;
+        }
     </style>
 </head>
 <body>
@@ -186,10 +248,21 @@
             </ul>
         </div>
 
-        <!-- August 21 -->
-        <div class="day-card" data-date="2026-08-21" data-location="Enoshima, Kanagawa, Japan">
+        <!-- August 21 - Exchanged with August 22 -->
+        <div class="day-card" data-date="2026-08-21" data-location="Tokyo, Japan">
             <div class="date-header">
                 <h2>Aug 21 (Fri)</h2>
+                <div class="weather-badge">—</div>
+            </div>
+            <ul class="activities">
+                <li>📸 Passport Picture Taking <span class="rest-text">(Not a travel day)</span></li>
+            </ul>
+        </div>
+
+        <!-- August 22 - Exchanged with August 21 -->
+        <div class="day-card" data-date="2026-08-22" data-location="Enoshima, Kanagawa, Japan">
+            <div class="date-header">
+                <h2>Aug 22 (Sat)</h2>
                 <div class="weather-badge">Loading...</div>
             </div>
             <ul class="activities">
@@ -199,25 +272,14 @@
             </ul>
         </div>
 
-        <!-- August 22 -->
-        <div class="day-card" data-date="2026-08-22" data-location="Tokyo, Japan">
-            <div class="date-header">
-                <h2>Aug 22 (Sat)</h2>
-                <div class="weather-badge">—</div>
-            </div>
-            <ul class="activities">
-                <li>📸 Passport Picture Taking <span class="rest-text">(Not a travel day)</span></li>
-            </ul>
-        </div>
-
         <!-- August 23 -->
-        <div class="day-card" data-date="2026-08-23" data-location="Lake Yamanakako, Yamanashi, Japan">
+        <div class="day-card" data-date="2026-08-23" data-location="Nikko, Tochigi, Japan">
             <div class="date-header">
                 <h2>Aug 23 (Sun)</h2>
                 <div class="weather-badge">Loading...</div>
             </div>
             <ul class="activities">
-                <li>🌊 <span class="rest-text">Maybe Lake Yamanakako</span></li>
+                <li>⛩️ <span class="rest-text">Maybe Nikko</span></li>
             </ul>
         </div>
 
@@ -233,13 +295,13 @@
         </div>
 
         <!-- August 25 -->
-        <div class="day-card" data-date="2026-08-25" data-location="Tokyo, Japan">
+        <div class="day-card" data-date="2026-08-25" data-location="Lake Yamanakako, Yamanashi, Japan">
             <div class="date-header">
                 <h2>Aug 25 (Tue)</h2>
                 <div class="weather-badge">Loading...</div>
             </div>
             <ul class="activities">
-                <li>❓ Undecided Day</li>
+                <li>🌊 <span class="rest-text">Maybe Lake Yamanakako</span></li>
             </ul>
         </div>
 
@@ -269,6 +331,49 @@
     </div>
 
     <script>
+        /*
+         * Automatically identify past days.
+         *
+         * Today's date is determined from the user's local device.
+         * Any card whose date is before today gets the "past" class.
+         */
+        function setupPastDayBlur() {
+            const today = new Date();
+
+            // Normalize today to midnight so time of day doesn't matter.
+            today.setHours(0, 0, 0, 0);
+
+            const cards = document.querySelectorAll('.day-card');
+
+            cards.forEach(card => {
+                const cardDateString = card.getAttribute('data-date');
+
+                if (!cardDateString) return;
+
+                // Parse YYYY-MM-DD safely in local time.
+                const [year, month, day] = cardDateString.split('-').map(Number);
+                const cardDate = new Date(year, month - 1, day);
+                cardDate.setHours(0, 0, 0, 0);
+
+                if (cardDate < today) {
+                    card.classList.add('past');
+
+                    /*
+                     * Clicking a past day reveals it.
+                     * Stop propagation if the user clicked a link
+                     * inside an already revealed card.
+                     */
+                    card.addEventListener('click', function(event) {
+                        if (!card.classList.contains('revealed')) {
+                            event.preventDefault();
+                            card.classList.add('revealed');
+                        }
+                    });
+                }
+            });
+        }
+
+
         async function fetchWeatherForCards() {
             const cards = document.querySelectorAll('.day-card');
 
@@ -281,7 +386,9 @@
                     if (!locationName || badge.textContent === "—") return;
 
                     try {
-                        const geoUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}&limit=1`;
+                        const geoUrl =
+                            `https://nominatim.openstreetmap.org/search?format=json&q=` +
+                            `${encodeURIComponent(locationName)}&limit=1`;
 
                         const geoResponse = await fetch(geoUrl, {
                             headers: {
@@ -347,6 +454,7 @@
             });
         }
 
+
         function getWeatherEmojiAndDesc(code) {
             if (code === 0) return { emoji: '☀️' };
             if (code >= 1 && code <= 3) return { emoji: '⛅' };
@@ -358,6 +466,11 @@
             return { emoji: '🌤️' };
         }
 
+
+        // Initialize past-day behavior immediately.
+        setupPastDayBlur();
+
+        // Load weather information.
         fetchWeatherForCards();
     </script>
 
